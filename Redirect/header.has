@@ -1,0 +1,49 @@
+#!/usr/bin/hassium
+
+func main() {
+	println("Location: index.has\n\n"); # page shouldn't be accessed directly
+}
+
+func printHeader() {
+	println("Content-Type: text/html;\n\n");
+	println("<!DOCTYPE html>
+<html>
+    <head>
+        <script src=\"https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.js\"></script>
+        <link rel=\"stylesheet\" href=\"https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.0.1/semantic.min.css\" />
+        <script src=\"https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.0.1/semantic.min.js\"></script>
+	<script src=\"https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.20/require.min.js\"></script>
+        <title>
+            Hassium URL Shortener
+        </title>
+        <style type=\"text/css\">
+			body, .ace_gutter-layer {
+				background-color: #272822 !important;
+				color: white;
+			}
+        </style>
+    </head>
+        <body>
+        <div class=\"ui inverted menu\" style=\"height: 44px;\">
+			<a class=\"item\" href=\"http://hassiumlang.com\">
+                Hassium official website
+            </a>
+			<a class=\"item\" href=\"http://hassiumlang.com/Hassium\">
+                Try Hassium Online
+            </a>
+			<a class=\"item\" href=\"http://hassiumlang.com/Paste\">
+                Hassium Pastebin
+            </a>
+			<a class=\"header item\" href=\"http://hassiumlang.com/Redirect\">
+                Shorten URL
+            </a>
+        </div>");
+	println("<center><h2>Welcome to Hassium URL Shortener.</h2><br><br></center>");
+	println("<div id='container' style='margin: 20px;'>");
+}
+
+func printFooter() {
+	println("</div>
+    </body>
+</html>");
+}

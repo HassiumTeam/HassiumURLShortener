@@ -1,0 +1,40 @@
+#!/usr/bin/hassium
+
+use Net;
+use IO;
+use "MySql.dll";
+use "header.has";
+
+func main () {
+	try {
+		if(!cgi.get.containsKey("url")) println("Location: index.has\n\n");
+
+		settings = File.readLines("settings.conf");
+		url = cgi.get["url"];
+
+		conn = new Sql(settings[0], settings[1], settings[2], settings[3]);
+		conn.open();
+
+		data = conn.select("SELECT * FROM redirects WHERE new=@dat1", ["@dat1", url]);
+
+		redirectTo = "";
+
+		while (data.read())
+			redirectTo = data.get("url");
+		else {
+			printHeader();
+			println("<h1>Requested URL was not found in database!</h1>");
+			printFooter();
+			exit(0);
+		}
+		
+		redirectTo = HttpUtility.addUriProtocol(redirectTo);
+
+		#println("<script type='text/javascript'>window.navigate('" + redirectTo + "');</script>");
+		println("Location: " + redirectTo + "\n\n");
+	} catch {
+		println("Content-Type: text/html;\n\n");
+		println("<script type='text/javascript'>alert('Something has gone horribly wrong!');</script>");
+		exit(0);
+	}
+}

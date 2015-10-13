@@ -1,0 +1,45 @@
+#!/usr/bin/hassium
+
+use "header.has";
+
+func main()
+{
+	printHeader();
+
+	println(@"
+	<center>
+		<div>
+			<div class='ui input'>
+				<input type='text' name='title' id='title' placeholder='URL' style='width: 670px !important;'></input>
+			</div>
+			<br>
+			<br>
+			<button class='ui blue submit button' id='btnShorten'>Shorten!</button><br>
+			<div class='ui input' style='margin-top: 30px; display: none;'><input type='text' id='resulttxt' onClick='this.select();' style='width: 390px; text-align: center;' readonly></input></div>
+			
+			<script>
+			$('document').ready(function() {
+				var btn = $('#btnShorten');
+				btn.click(function(e) {
+					if($('#title').val() == '')
+					{
+						alert('You must enter an URL!');
+					}
+					else
+					{
+						btn.blur();
+						btn.addClass('loading');
+						$.get('make-redirect.has', {url: $('#title').val()}, function(data) {
+							$('#resulttxt').val(data);
+							$('#resulttxt').parent().show();
+						});
+						btn.removeClass('loading');
+					}
+				});
+			});
+			</script>
+		</div>
+	</center>");
+	
+	printFooter();
+}

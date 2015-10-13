@@ -1,0 +1,60 @@
+#!/usr/bin/hassium
+
+use IO;
+use Math;
+use net;
+use Text;
+use "MySql.dll";
+use Debug;
+
+settings = File.readLines("settings.conf");
+
+func main () {
+	if(!cgi.get.containsKey("url"))
+		println("Location: index.has\n\n");
+
+	println("Content-Type: text/html;\n\n");
+	url = cgi.get["url"].toString();
+
+	results = checkForDouble(url);
+
+	if (results[0])
+		newUrl = results[1];
+	else {
+		newUrl = generateUrl();
+
+		hash = Math.hash("md5", url);
+	
+		conn = new Sql(settings[0], settings[1], settings[2], settings[3]);
+		conn.open();
+	
+		conn.query("redirects", ["hash", "new", "url", "ip"], [hash, newUrl, url, cgi.remote.ip]);
+	
+		conn.close();
+	}
+
+	println(settings[4] + "/Redirect/goto.has?url=" + newUrl);
+}
+
+func checkForDouble(url) {
+	conn = new Sql(settings[0], settings[1], settings[2], settings[3]);
+	conn.open();
+
+	data = conn.select("SELECT * FROM redirects WHERE url=@dat1", ["@dat1", url]);
+	if (data.read())
+		return [true, data.get("new")];
+
+	return [false, ""];
+}
+
+func generateUrl () {
+	ret = new StringBuilder();
+	rnd = new Random();
+
+	letters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
+
+	foreach (x in range(0, 6))
+		ret.append(letters[rnd.next(0, letters.length - 1)].toString());
+
+	return ret.toString();
+}
